@@ -1,5 +1,3 @@
-// This file overwrites the stock UV config.js
-
 self.__uv$config = {
     prefix: "/uv/service/",
     encodeUrl: Ultraviolet.codec.xor.encode,
