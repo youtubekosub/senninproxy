@@ -1,1 +1,68 @@
-<h1>Yo, there aint nothin here (404 btw)</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>404 Not Found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(120deg, #0d0d12, #111827, #0d0d12);
+      background-size: 200% 200%;
+      animation: bgMove 10s ease infinite;
+      color: #e5e7eb;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 64px;
+      margin-bottom: 10px;
+      color: #60a5fa;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    p {
+      color: #9ca3af;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    a {
+      padding: 10px 20px;
+      border-radius: 6px;
+      background: #1f2937;
+      color: #e5e7eb;
+      text-decoration: none;
+      border: 1px solid #374151;
+      transition: 0.2s;
+    }
+
+    a:hover {
+      background: #374151;
+    }
+  </style>
+</head>
+<body>
+  <h1>404</h1>
+  <p>お探しのページは見つかりませんでした。</p>
+  <a href="/">ホームに戻る</a>
+</body>
+</html>
