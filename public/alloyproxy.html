@@ -94,7 +94,7 @@
             background: none; 
             border: none; 
             color: white; 
-            font-size: 14px; 
+            font-size: 0; /* テキストを隠す */
             font-weight: bold;
             cursor: pointer; 
             border-radius: 4px;
@@ -104,8 +104,43 @@
             align-items: center; 
             justify-content: center;
             transition: background 0.2s;
+            position: relative;
         }
         .nav-btn:hover { background: rgba(255,255,255,0.08); }
+
+        /* アイコンの描画 */
+        .icon-back::before {
+            content: '';
+            width: 8px; height: 8px;
+            border-left: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            margin-left: 3px;
+        }
+        .icon-forward::before {
+            content: '';
+            width: 8px; height: 8px;
+            border-right: 2px solid currentColor;
+            border-top: 2px solid currentColor;
+            transform: rotate(45deg);
+            margin-right: 3px;
+        }
+        .icon-reload::before {
+            content: '';
+            width: 12px; height: 12px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+        }
+        .icon-reload::after {
+            content: '';
+            position: absolute;
+            top: 10px; right: 8px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 4px solid currentColor;
+            transform: rotate(45deg);
+        }
 
         #address-bar-container {
             flex-grow: 1;
@@ -174,9 +209,9 @@
 
 <div id="toolbar">
     <div class="nav-icons">
-        <button class="nav-btn" title="Back" onclick="getCurrentFrame()?.contentWindow.history.back()">PREV</button>
-        <button class="nav-btn" title="Forward" onclick="getCurrentFrame()?.contentWindow.history.forward()">NEXT</button>
-        <button class="nav-btn" title="Reload" onclick="getCurrentFrame()?.contentWindow.location.reload()">REF</button>
+        <button class="nav-btn icon-back" title="Back" onclick="getCurrentFrame()?.contentWindow.history.back()">PREV</button>
+        <button class="nav-btn icon-forward" title="Forward" onclick="getCurrentFrame()?.contentWindow.history.forward()">NEXT</button>
+        <button class="nav-btn icon-reload" title="Reload" onclick="getCurrentFrame()?.contentWindow.location.reload()">REF</button>
     </div>
     <div id="address-bar-container">
         <input type="text" id="iurl" placeholder="Search or enter URL" autocomplete="off">
