@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>仙人Tube</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#fdf6e3">
+  <link rel="icon" href="icon.png" type="image/png">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #fdf6e3, #e1d7c6);
+      color: #3e3e3e;
+      text-align: center;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #6b4c1e;
+      margin-bottom: 1rem;
+    }
+    input {
+      padding: 0.5rem;
+      width: 60%;
+      max-width: 400px;
+      border: 2px solid #c9b79c;
+      border-radius: 8px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #a68a64;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 0.3rem;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #8e7452;
+    }
+    #player, #gameFrame {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      border: 4px solid #c9b79c;
+      border-radius: 12px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .hidden { display: none; }
+    #homeButton {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #a68a64;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      z-index: 9999;
+      display: none;
+    }
+    #homeButton:hover {
+      background-color: #8e7452;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="homeButton" onclick="showInput()">ホーム</button>
+
+  <div id="inputSection">
+    <h1>仙人Tube</h1>
+    <input type="text" id="youtubeUrl" placeholder="YouTubeのURLを入力">
+    <br>
+    <button onclick="loadVideo()">再生</button>
+    <button onclick="loadGame()">ゲーム</button>
+  </div>
+
+  <div id="player" class="hidden"></div>
+  <div id="gameFrame" class="hidden"></div>
+
+  <script>
+    function extractVideoID(url) {
+      const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([\w-]{11})/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
+
+    function loadVideo() {
+      const url = document.getElementById('youtubeUrl').value;
+      const videoId = extractVideoID(url);
+      if (videoId) {
+        document.getElementById('player').innerHTML =
+          `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
+        document.getElementById('player').classList.remove('hidden');
+        document.getElementById('gameFrame').classList.add('hidden');
+        document.getElementById('inputSection').classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert("正しいYouTubeのURLを入力してください");
+      }
+    }
+
+    function loadGame() {
+      document.getElementById('gameFrame').innerHTML =
+        `<iframe src="https://tetris.com/play-tetris"></iframe>`;
+      document.getElementById('gameFrame').classList.remove('hidden');
+      document.getElementById('player').classList.add('hidden');
+      document.getElementById('inputSection').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showInput() {
+      document.getElementById('inputSection').classList.remove('hidden');
+      document.getElementById('homeButton').style.display = 'none';
+      document.getElementById('player').innerHTML = '';
+      document.getElementById('gameFrame').innerHTML = '';
+      document.getElementById('player').classList.add('hidden');
+      document.getElementById('gameFrame').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('scroll', () => {
+      const hidden = document.getElementById('inputSection').classList.contains('hidden');
+      document.getElementById('homeButton').style.display =
+        hidden && window.scrollY > 100 ? 'block' : 'none';
+    });
+
+    // PWA登録
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log("Service Worker registered:", reg.scope))
+        .catch(err => console.error("Service Worker registration failed:", err));
+    }
+  </script>
+</body>
+</html>
