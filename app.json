@@ -1,7 +1,0 @@
-{
-  "name": "SenninProxy",
-  "description": "AlloyProxy-based Web Proxy with Arc.io integration",
-  "repository": "https://github.com/katuoaikouka/Tekitou",
-  "logo": "https://arc.io/logo.png",
-  "keywords": ["proxy", "alloy", "unblocker"]
-}
