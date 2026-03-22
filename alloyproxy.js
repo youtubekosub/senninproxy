@@ -28,9 +28,14 @@ localprox.ws(server);
 // 静的ファイルの提供
 app.use(express.static(path.join(__dirname, 'public')));
 
-// メインルート
+// メインルート (index.htmlには干渉しない)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// alloyproxy.html用のルート追加
+app.get('/proxy', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'alloyproxy.html'));
 });
 
 // サーバー起動
