@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SenninProxy</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="/uv/uv.bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
     <script src="/baremux/index.js"></script>
@@ -134,6 +135,23 @@
             position: relative;
         }
 
+        /* ナビゲーションボタンのスタイル */
+        .nav-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .nav-button:hover { background: var(--hover-bg); }
+        .nav-button i { width: 18px; height: 18px; }
+
         #address-bar-container {
             flex-grow: 1;
             background: #0f172a;
@@ -161,21 +179,21 @@
             letter-spacing: 0.3px;
         }
 
+        /* 検索ボタン（アイコン用） */
         #searchButton {
-            background: var(--accent-color);
+            background: none;
             border: none;
-            color: #0f172a;
-            padding: 5px 15px;
-            border-radius: 15px;
+            color: var(--accent-color);
             cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: transform 0.1s, background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: transform 0.1s;
         }
 
         #searchButton:hover {
-            background: #7dd3fc;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         #switcher {
@@ -219,15 +237,15 @@
             color: white; 
             font-size: 20px; 
             cursor: pointer; 
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin-bottom: 6px;
-            margin-left: 4px;
-            transition: background 0.2s;
+            width: 28px; 
+            height: 28px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            margin-bottom: 6px; 
+            margin-left: 4px; 
+            transition: background 0.2s; 
         }
         .add-tab:hover { background: var(--hover-bg); }
     </style>
@@ -245,21 +263,36 @@
 </div>
 
 <div id="toolbar">
+    <button class="nav-button" id="backBtn" title="Back">
+        <i data-lucide="arrow-left"></i>
+    </button>
+    <button class="nav-button" id="forwardBtn" title="Forward">
+        <i data-lucide="arrow-right"></i>
+    </button>
+    <button class="nav-button" id="reloadBtn" title="Reload">
+        <i data-lucide="rotate-cw"></i>
+    </button>
+
     <select id="switcher">
         <option value="bare" selected>Bare</option>
         <option value="epoxy">Epoxy</option>
     </select>
     <div id="address-bar-container">
         <input type="text" id="urlInput" placeholder="Enter URL here" autocomplete="off">
+        <button id="searchButton" title="Search">
+            <i data-lucide="search"></i>
+        </button>
     </div>
-    <button id="searchButton">Search Text</button>
 </div>
 
 <div id="view-container">
 </div>
 
 <script>
-/* タブ管理用ロジック（追加部分） */
+/* アイコンの初期化 */
+lucide.createIcons();
+
+/* タブ管理用ロジック */
 let tabCount = 0;
 
 function createNewTab() {
@@ -310,7 +343,7 @@ function switchTab(tabId) {
     const activeIframe = document.getElementById(tabId);
     activeIframe.classList.add('active');
 
-    // グローバルなiframeWindow変数を現在のiframeに更新（元のロジック用）
+    // グローバルなiframeWindow変数を現在のiframeに更新
     window.iframeWindow = activeIframe;
     
     // アドレスバーの同期
@@ -341,14 +374,32 @@ function closeTab(event, tabId) {
 
 document.getElementById('addTabBtn').onclick = createNewTab;
 
+// ナビゲーションボタンの機能割り当て
+document.getElementById('backBtn').onclick = () => {
+    if (window.iframeWindow && window.iframeWindow.contentWindow) {
+        window.iframeWindow.contentWindow.history.back();
+    }
+};
+document.getElementById('forwardBtn').onclick = () => {
+    if (window.iframeWindow && window.iframeWindow.contentWindow) {
+        window.iframeWindow.contentWindow.history.forward();
+    }
+};
+document.getElementById('reloadBtn').onclick = () => {
+    if (window.iframeWindow && window.iframeWindow.contentWindow) {
+        window.iframeWindow.contentWindow.location.reload();
+    }
+};
+
 // 初期タブ作成
 createNewTab();
 
-/* --- ここから下のロジック部分は、1枚目の提供コードから一切一文字も変更していません。 --- */
+/* --- ロジック部分 --- */
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js")
 const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 const bareUrl = (location.protocol === "https:" ? "https" : "http") + "://" + location.host + "/bare/"
-document // makes it so you can press enter to submit as opposed to just being able to press a button
+
+document
     .getElementById("urlInput")
     .addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
@@ -360,26 +411,23 @@ document // makes it so you can press enter to submit as opposed to just being a
 document.getElementById("searchButton").onclick = async function (event) {
     event.preventDefault();
 
-    let url = document.getElementById("urlInput").value; // if no periods are detected in the input, search google instead
+    let url = document.getElementById("urlInput").value; 
     let searchUrl = "https://www.google.com/search?q=";
 
     if (!url.includes(".")) {
         url = searchUrl + encodeURIComponent(url);
     } else {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) { // if no http or https is detected, add https automatically
+        if (!url.startsWith("http://") && !url.startsWith("https://")) { 
             url = "https://" + url;
         }
     }
     
-    // 読み込みアニメーション開始
     const pb = document.getElementById('progress-bar');
     pb.style.opacity = '1';
     pb.style.width = '30%';
     setTimeout(() => { if(pb.style.width === '30%') pb.style.width = '70%'; }, 500);
 
-    // タブに生URLを保存（タブ切り替え時のアドレスバー復元用）
     window.iframeWindow.dataset.rawUrl = url;
-    // タブのタイトルを入力URLに更新
     const activeTab = document.querySelector('.tab.active .tab-title');
     if (activeTab) activeTab.innerText = url.split('/') || url;
 
@@ -389,7 +437,7 @@ document.getElementById("searchButton").onclick = async function (event) {
     iframeWindow.src = __uv$config.prefix + __uv$config.encodeUrl(url);
 };
 
-document.getElementById("switcher").onselect = async function (event) {
+document.getElementById("switcher").onchange = async function (event) {
     switch (event.target.value) {
         case "epoxy":
             await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
