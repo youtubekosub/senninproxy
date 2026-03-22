@@ -63,7 +63,7 @@
         }
     </style>
 </head>
-<body>
+<body ondblclick="openAlloy()">
 
     <div class="decor" style="top: -100px; left: -100px;"></div>
     <div class="decor" style="bottom: -100px; right: -100px;"></div>
@@ -73,5 +73,21 @@
         <p>上のアドレスバーから検索</p>
     </div>
 
+    <script>
+        function openAlloy() {
+            const win = window.open('about:blank', '_blank');
+            if (win) {
+                win.document.body.style.margin = '0';
+                win.document.body.style.height = '100vh';
+                const iframe = win.document.createElement('iframe');
+                iframe.style.border = 'none';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.margin = '0';
+                iframe.src = window.location.origin + '/alloyproxy.html';
+                win.document.body.appendChild(iframe);
+            }
+        }
+    </script>
 </body>
 </html>
