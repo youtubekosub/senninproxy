@@ -6,3 +6,6 @@ https://github.com/crllect/How-to-make-an-ultraviolet-proxy
 # senninproxy
 
 utravioletproxyを使ったよ
+
+# ほしい機能について
+googleformへお願いします。
