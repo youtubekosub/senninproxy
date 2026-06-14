@@ -11,12 +11,12 @@
   "tasks": {
     "start": {
       "name": "start",
-      "command": "pnpm start",
+      "command": "npm start",
       "runAtStart": false
     },
     "dev": {
       "name": "dev",
-      "command": "node server.js",
+      "command": "npm start",
       "runAtStart": true
     }
   }
